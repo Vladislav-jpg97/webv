@@ -1,0 +1,325 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --hue: 255;
+  --ink: #07070b;
+  --line: rgba(255, 255, 255, 0.09);
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Базовый размер шрифта по размеру экрана: весь интерфейс на rem масштабируется вместе с ним */
+html {
+  font-size: 100%;
+}
+@media (max-width: 359px) {
+  html { font-size: 93.75%; }
+}
+@media (min-width: 1920px) {
+  html { font-size: 112.5%; }
+}
+@media (min-width: 2560px) {
+  html { font-size: 137.5%; }
+}
+@media (min-width: 3200px) {
+  html { font-size: 175%; }
+}
+/* Низкие горизонтальные экраны (телефон в landscape) */
+@media (max-height: 540px) and (orientation: landscape) {
+  #home { min-height: auto; padding-top: 6.5rem; padding-bottom: 3rem; }
+  .section { padding-block: 4.5rem; }
+}
+/* Устройства без наведения: не оставляем «залипших» hover-подъёмов */
+@media (hover: none) {
+  .hover\:-translate-y-1:hover, .hover\:-translate-y-1\.5:hover { transform: none; }
+}
+
+html {
+  background: var(--ink);
+  color-scheme: dark;
+  -webkit-text-size-adjust: 100%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  background: var(--ink);
+  color: #f4f4f8;
+  font-family: 'Manrope Variable', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: rgba(109, 92, 255, 0.55);
+  color: #fff;
+}
+
+/* Скроллбар */
+html::-webkit-scrollbar {
+  width: 10px;
+}
+html::-webkit-scrollbar-track {
+  background: var(--ink);
+}
+html::-webkit-scrollbar-thumb {
+  background: #23233a;
+  border-radius: 10px;
+}
+
+:focus-visible {
+  outline: 2px solid #8b7bff;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+/* ---------- Layout helpers ---------- */
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[77.5rem] px-5 sm:px-8 lg:px-10;
+  }
+  .section {
+    @apply relative py-24 md:py-36;
+    overflow-x: clip;
+  }
+  .eyebrow {
+    @apply font-mono text-[11px] uppercase tracking-[0.28em] text-mute;
+  }
+  .h2 {
+    @apply font-display font-semibold leading-[1.08] tracking-[-0.02em];
+    font-size: clamp(1.65rem, 1.1rem + 2.3vw, 3.5rem);
+  }
+  .glass {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.02));
+    border: 1px solid var(--line);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+  .text-grad {
+    background: linear-gradient(100deg, #b7acff 0%, #6d8cff 55%, #5fd0ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .outline-num {
+    color: transparent;
+    -webkit-text-stroke: 1px rgba(255, 255, 255, 0.28);
+  }
+  .field {
+    @apply w-full rounded-2xl border border-white/10 bg-white/[0.04] px-4 py-3.5 text-[15px] text-white outline-none transition placeholder:text-white/30;
+  }
+  .field:focus {
+    border-color: rgba(139, 123, 255, 0.8);
+    background: rgba(255, 255, 255, 0.06);
+    box-shadow: 0 0 0 4px rgba(109, 92, 255, 0.16);
+  }
+  .field[aria-invalid='true'] {
+    border-color: rgba(255, 110, 130, 0.7);
+  }
+}
+
+/* ---------- Фон ---------- */
+.bg-aurora {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  will-change: transform;
+}
+.blob-a {
+  width: 62vw;
+  height: 62vw;
+  max-width: 880px;
+  max-height: 880px;
+  left: -14vw;
+  top: -18vh;
+  background: radial-gradient(circle, hsl(var(--hue) 95% 58% / 0.34), transparent 66%);
+  animation: blobA 26s ease-in-out infinite alternate;
+}
+.blob-b {
+  width: 56vw;
+  height: 56vw;
+  max-width: 800px;
+  max-height: 800px;
+  right: -16vw;
+  top: 34vh;
+  background: radial-gradient(circle, hsl(calc(var(--hue) - 45) 95% 56% / 0.26), transparent 66%);
+  animation: blobB 32s ease-in-out infinite alternate;
+}
+.blob-c {
+  width: 46vw;
+  height: 46vw;
+  max-width: 640px;
+  max-height: 640px;
+  left: 22vw;
+  bottom: -22vh;
+  background: radial-gradient(circle, hsl(calc(var(--hue) + 40) 90% 60% / 0.2), transparent 66%);
+  animation: blobA 38s ease-in-out infinite alternate-reverse;
+}
+.grain {
+  position: fixed;
+  inset: -50%;
+  width: 200%;
+  height: 200%;
+  pointer-events: none;
+  opacity: 0.075;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.grid-lines {
+  background-image: linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+  background-size: 72px 72px;
+  mask-image: radial-gradient(ellipse at 50% 30%, #000 10%, transparent 72%);
+  -webkit-mask-image: radial-gradient(ellipse at 50% 30%, #000 10%, transparent 72%);
+}
+
+/* ---------- Анимации ---------- */
+@keyframes blobA {
+  from { transform: translate3d(0, 0, 0) scale(1); }
+  to { transform: translate3d(8vw, 10vh, 0) scale(1.15); }
+}
+@keyframes blobB {
+  from { transform: translate3d(0, 0, 0) scale(1.1); }
+  to { transform: translate3d(-9vw, -8vh, 0) scale(0.92); }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(26px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes wordUp {
+  from { transform: translateY(108%) rotate(3deg); }
+  to { transform: none; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes marquee {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+@keyframes spin-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(0.7); }
+}
+@keyframes sweep {
+  from { transform: translateX(-120%) skewX(-18deg); }
+  to { transform: translateX(260%) skewX(-18deg); }
+}
+@keyframes typing {
+  0%, 60%, 100% { opacity: 0.25; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-2px); }
+}
+@keyframes dash {
+  to { stroke-dashoffset: -24; }
+}
+
+.rise {
+  opacity: 0;
+  animation: rise 1s var(--ease-out) forwards;
+  animation-delay: var(--d, 0s);
+}
+.word-mask {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: bottom;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+.word-in {
+  display: inline-block;
+  transform: translateY(108%);
+  animation: wordUp 1.05s var(--ease-out) forwards;
+  animation-delay: var(--d, 0s);
+}
+.fade-in {
+  opacity: 0;
+  animation: fadeIn 1.6s ease forwards;
+  animation-delay: var(--d, 0s);
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--speed, 40s) linear infinite;
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+.floaty {
+  animation: float var(--fd, 6s) ease-in-out infinite;
+  animation-delay: var(--fdelay, 0s);
+}
+.dash-flow {
+  stroke-dasharray: 4 8;
+  animation: dash 1.4s linear infinite;
+}
+.typing-dot {
+  animation: typing 1.3s ease-in-out infinite;
+}
+.shine::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  transform: translateX(-120%) skewX(-18deg);
+  pointer-events: none;
+}
+.shine:hover::after {
+  animation: sweep 0.9s var(--ease-out);
+}
+
+/* ---------- Timeline (Process) ---------- */
+.step[data-active='true'] .step-num {
+  background: linear-gradient(135deg, #8b7bff, #2f7bff);
+  border-color: transparent;
+  color: #fff;
+  box-shadow: 0 0 0 8px rgba(109, 92, 255, 0.14), 0 10px 40px -8px rgba(109, 92, 255, 0.8);
+}
+.step[data-active='true'] .step-body {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise,
+  .word-in,
+  .fade-in {
+    animation: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+  .marquee-track,
+  .floaty,
+  .bg-aurora,
+  .dash-flow,
+  .typing-dot {
+    animation: none !important;
+  }
+}
+
+/* Мобильные: облегчаем тяжёлые эффекты */
+@media (max-width: 767px) {
+  .bg-aurora {
+    filter: blur(60px);
+  }
+  .grain {
+    opacity: 0.05;
+  }
+  .glass {
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+  }
+}
